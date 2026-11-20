@@ -1,0 +1,23 @@
+// Prisma schema for the Budiman HRMS login module.
+// Shape decided in docs/specs/02-design.md §1 — change the spec first.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  name        String
+  icNumber    String   @unique
+  email       String   @unique
+  password    String
+  role        String
+  division    String
+  designation String
+  createdAt   DateTime @default(now())
+}

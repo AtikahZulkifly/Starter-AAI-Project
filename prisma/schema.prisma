@@ -20,4 +20,35 @@ model User {
   division    String
   designation String
   createdAt   DateTime @default(now())
+
+  employeeRequests  LeaveRequest[] @relation("EmployeeRequests")
+  supervised        LeaveRequest[] @relation("NamedSupervisor")
+  signedAsSupervisor LeaveRequest[] @relation("SignedRequests")
+  hrDecisions       LeaveRequest[] @relation("HrDecided")
+}
+
+// One row per request — shape decided in docs/specs/02-design.md §9, statuses
+// Reference D and leave types Reference C; change the spec first.
+model LeaveRequest {
+  id               Int       @id @default(autoincrement())
+  employeeId       Int
+  supervisorId     Int
+  signedById       Int?
+  leaveType        String
+  otherLeaveType   String?
+  note             String?
+  startDate        DateTime
+  endDate          DateTime
+  status           String    @default("PendingSupervisor")
+  supervisorRemark String?
+  hrOfficerId      Int?
+  hrRemark         String?
+  submittedAt      DateTime  @default(now())
+  signedAt         DateTime?
+  decidedAt        DateTime?
+
+  employee   User  @relation("EmployeeRequests", fields: [employeeId], references: [id])
+  supervisor User  @relation("NamedSupervisor", fields: [supervisorId], references: [id])
+  signedBy   User? @relation("SignedRequests", fields: [signedById], references: [id])
+  hrOfficer  User? @relation("HrDecided", fields: [hrOfficerId], references: [id])
 }

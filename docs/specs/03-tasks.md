@@ -145,15 +145,15 @@ C/D). The login tasks above are Done and untouched.
 
 | Status | # | Task | Priority | Checks (from requirements §10) |
 |--------|---|------|----------|-------------------------------|
-| To do | 1 | Database: the `LeaveRequest` table | High | AC-16 (part), AC-19 (part) |
-| To do | 2 | The leave rules library (`src/lib/leave.ts`) | High | proven by Tasks 3–7 (AC-20, AC-21, AC-24–26, AC-30) |
-| To do | 3 | Employee: the new-request form | High | AC-16, AC-17, AC-18, AC-19, AC-34 (submit) |
-| To do | 4 | Employee: list, edit and cancel | High | AC-20, AC-21, AC-22, AC-23, AC-34 (edit, cancel) |
-| To do | 5 | Supervisor: sign and reject | High | AC-24, AC-25, AC-26, AC-34 (sign, reject) |
-| To do | 6 | Employee: send a Signed request to HR | High | AC-27, AC-34 (send) |
-| To do | 7 | HR: approve, reject, first decision wins | High | AC-28, AC-29, AC-30, AC-31, AC-32 |
-| To do | 8 | Admin: the read-only record view with filters | Medium | AC-33 |
-| To do | 9 | Full acceptance walkthrough (leave) | High | AC-16 … AC-34 |
+| Done | 1 | Database: the `LeaveRequest` table | High | AC-16 (part), AC-19 (part) |
+| Done | 2 | The leave rules library (`src/lib/leave.ts`) | High | proven by Tasks 3–7 (AC-20, AC-21, AC-24–26, AC-30) |
+| Done | 3 | Employee: the new-request form | High | AC-16, AC-17, AC-18, AC-19, AC-34 (submit) |
+| Done | 4 | Employee: list, edit and cancel | High | AC-20, AC-21, AC-22, AC-23, AC-34 (edit, cancel) |
+| Done | 5 | Supervisor: sign and reject | High | AC-24, AC-25, AC-26, AC-34 (sign, reject) |
+| Done | 6 | Employee: send a Signed request to HR | High | AC-27, AC-34 (send) |
+| Done | 7 | HR: approve, reject, first decision wins | High | AC-28, AC-29, AC-30, AC-31, AC-32 |
+| Done | 8 | Admin: the read-only record view with filters | Medium | AC-33 |
+| Done | 9 | Full acceptance walkthrough (leave) | High | AC-16 … AC-34 |
 
 ---
 

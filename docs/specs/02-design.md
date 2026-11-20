@@ -21,7 +21,7 @@ are added below the existing entries, never over them.
 | `name` | text | yes | Full name, e.g. "Employee 1" |
 | `icNumber` | text | yes | Identity card number, format `xx-xxxxxx` (two digits, hyphen, six digits), unique |
 | `email` | text | yes | Work email, unique, always ends `@budiman.com`; the login username |
-| `password` | text | yes | bcrypt hash (`$2a$…`, cost 10) — never plain text, never shown or logged |
+| `password` | text | yes | bcrypt hash (`$2b$…`, cost 10; bcryptjs 3.x writes `$2b$`) — never plain text, never shown or logged |
 | `role` | text | yes | One of: `Employee`, `Supervisor`, `HR`, `Admin` (Reference A) — exactly one per user |
 | `division` | text | yes | One of the five divisions (Reference A); used later to pick a supervisor |
 | `designation` | text | yes | Job title (Reference A) |
@@ -61,7 +61,7 @@ with the password hashed at seed time.
 8. **Only HR resets passwords.** An HR officer can reset any user's password to
    `password123` from `/hr/password-reset`; the action is HR-only server-side, and the
    target user is chosen from a list, never typed as free text (AC-13). *(Spec
-   amendment pending HR Manager approval — see requirements §3.)*
+   amendment approved 20/11/2026 — see requirements §3.)*
 9. **Accounts are seeded, not signed up.** There is no sign-up form and no way to
    create a user through the app (requirements §5).
 
@@ -78,16 +78,19 @@ with the password hashed at seed time.
 
 ## 4. Screens (routes)
 
+The look of every screen follows §8 (visual design); the "What it shows" column
+below stays the behavioural contract and is unchanged by the restyling.
+
 | Route | Who | What it shows | Status |
 |-------|-----|---------------|--------|
-| `/` | anyone | Redirects: signed in → own home page, not signed in → `/login` | To do |
-| `/login` | anyone not signed in | Email field, password field (masked), "Remember me" tick, **Sign in** button; errors appear above the form. The sign-in confirmation ("Sign in as {email}?") and the "Too many attempts" refusal come from rules 5 and 7. A signed-in visitor is bounced to their home (AC-10) | To do |
-| `/employee` | Employee | The employee home page with a "Welcome back, {name}" message (content arrives with the leave module); top bar shows name, role and **Log out** (AC-15) | To do |
-| `/supervisor` | Supervisor | The supervisor home page, same pattern | To do |
-| `/hr` | HR | The HR home page, same pattern, plus a link to the password-reset page | To do |
-| `/admin` | Admin | The admin home page, same pattern (the record view itself is a later module) | To do |
-| `/hr/password-reset` | HR only | List of all users (name, email, role); each row has **Reset password**, which confirms "Reset {name}'s password to password123?" and then shows a success message (AC-13) | To do |
-| — (403 screen) | nobody directly | Not a URL: the shared "403 — you don't have access to this page" screen a page renders when the role check fails (AC-09). No data from the refused area is shown | To do |
+| `/` | anyone | Redirects: signed in → own home page, not signed in → `/login` | Done |
+| `/login` | anyone not signed in | Split auth card per §8: pink illustration panel left; right panel with centred "Sign in" heading, email field, password field (masked), "Remember me" tick, full-width **Sign in** button, and the static helper line "Forgot your password? Ask HR to reset it."; errors appear above the button. The sign-in confirmation ("Sign in as {email}?") and the "Too many attempts" refusal come from rules 5 and 7. A signed-in visitor is bounced to their home (AC-10) | Done |
+| `/employee` | Employee | The employee home page per §8: salmon top bar, warm-grey page, white rounded card with a "Welcome back, {name}" message (content arrives with the leave module); top bar shows name, role and **Log out** (AC-15) | Done |
+| `/supervisor` | Supervisor | The supervisor home page, same pattern | Done |
+| `/hr` | HR | The HR home page, same pattern, plus a salmon link to the password-reset page | Done |
+| `/admin` | Admin | The admin home page, same pattern (the record view itself is a later module) | Done |
+| `/hr/password-reset` | HR only | List of all users (name, email, role) in a §8 card; each row has a salmon **Reset password** button, which confirms "Reset {name}'s password to password123?" and then shows a success message (AC-13) | Done |
+| — (403 screen) | nobody directly | Not a URL: the shared "403 — you don't have access to this page" card a page renders when the role check fails (AC-09). No data from the refused area is shown | Done |
 
 ## 5. Where the code lives
 
@@ -110,9 +113,11 @@ with the password hashed at seed time.
 | `src/app/hr/password-reset/page.tsx` | The reset list — `requireUser(["HR"])` |
 | `src/app/hr/password-reset/actions.ts` | The reset server action — re-checks `requireUser(["HR"])` before touching any row (rule 8) |
 | `src/app/admin/page.tsx` | Admin home — `requireUser(["Admin"])` |
-| `src/components/TopBar.tsx` | Name, role, **Log out** button with its confirmation (AC-11, AC-15) |
+| `src/components/TopBar.tsx` | Name, role, **Log out** button with its confirmation (AC-11, AC-15); salmon bar per §8 |
 | `src/components/Forbidden.tsx` | The shared 403 screen |
 | `src/components/FlashMessage.tsx` | Success/error banner used by the messages above |
+| `src/components/PageCard.tsx` | The shared white rounded card the home pages, the 403 screen and the reset list sit inside (§8) |
+| `public/auth-illustration.webp` | Copy of the agreed picture; shown cropped (left half only) inside the login page's pink panel (§8) |
 
 ## 6. Security (in plain words)
 
@@ -147,6 +152,62 @@ with the password hashed at seed time.
 | `npm run dev` | Start the app at http://localhost:3000 |
 | `npm run lint` | Check the code |
 | `npx prisma studio` | Open the database to eyeball hashes and rows (used by AC-13, AC-14) |
+
+## 8. Visual design (picture reference, approved 20/11/2026)
+
+Source: the mock-up picture supplied by Atikah on 20/11/2026 (left pink panel with
+a 3D illustration, right white panel with centred heading, outlined inputs and a
+full-width pill CTA). It is the look for `/login` and all app screens. **Only the
+appearance changes — rules 1–9, the actions, confirmations and messages of §2/§4
+stay exactly as built.** Agreed adaptations: no Google/Facebook buttons and no
+"Or" divider (no social sign-in exists), no "Eng / LO" language control (the app
+is English only); the picture's tagline and footer link become the static texts
+below (dead links were rejected).
+
+**Palette** (fixed hexes):
+
+| Token | Hex | Where |
+|-------|-----|-------|
+| Page background | `#ECE9E7` | warm grey behind cards, every screen |
+| Card | `#FFFFFF` | auth card, home cards, reset list, 403 card |
+| Panel pink (gradient) | `#F8C7BF → #F09A90` | login left panel, top to bottom |
+| Accent salmon | `#F5A199` (hover `#EE8D84`) | primary buttons, top bar, links |
+| Ink | `#3B3837` | headings and body text |
+| Muted grey | `#A29C9A` | field labels, helper text, placeholders |
+| Hairline | `#E4DFDC` | input borders, card borders, table row separators |
+| Error / success text | `#C0392B` / `#1E8449` | flash messages (unchanged meaning) |
+
+**Shapes and spacing** (Tailwind in brackets): card radius 24 px (`rounded-3xl`),
+buttons pill (`rounded-full`), inputs 8 px (`rounded-lg`), input height ≈ 42 px
+(`px-3.5 py-2.5`), card padding 40 px (`p-10`), vertical rhythm on an 8 px grid —
+field gaps 16 px (`space-y-4`), section gaps 32 px (`mt-8`). Cards get a soft
+shadow (`shadow-[0_18px_45px_-20px_rgba(59,56,55,0.25)]`). Focus: 2 px salmon
+ring on inputs and buttons.
+
+**Per screen:**
+
+- `/login` — full-height `#ECE9E7` page; one centred card, max-width 880 px, two
+  columns (left ≈ 45%): the left column carries the panel-pink gradient with
+  `public/auth-illustration.webp` shown cropped to its illustration side — a
+  pixel-proved CSS background crop (the 400×277 file's shapes sit at x ≈5–29%,
+  y ≈40–77%, so `background-size: 420% auto; background-position: 6.6% 55.1%`
+  hides the picture's grey matting, its own tagline and its white form panel)
+  and the
+  static white tagline block top-left: **"Budiman HRMS" / "Leave Request
+  module"**; the right column is white with the centred "Sign in" heading
+  (text-2xl bold, ink), grey label above each field, the form's existing fields
+  and button restyled, flash messages above the button, and the static grey
+  helper line "Forgot your password? Ask HR to reset it." under it. Under 768 px
+  the left panel collapses to a slim banner above the form.
+- **App shell** — top bar is the accent salmon with white text: brand
+  "Budiman HRMS" left; name + `(role)` and the white pill **Log out**
+  (salmon text) right. Pages below keep the warm-grey background.
+- **Home pages** — centred `PageCard`: ink "Welcome back, {name}" heading and
+  the muted sub-line; HR's reset link in salmon.
+- `/hr/password-reset` — `PageCard` with the user table: hairline row separators,
+  muted column headings, salmon pill **Reset password** buttons.
+- **403 screen** — `PageCard`, centred: muted "403", ink heading "you don't have
+  access to this page", muted explanation, salmon "Go to my home page" link.
 
 ---
 

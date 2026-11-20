@@ -15,14 +15,14 @@ Every task traces back to `01-requirements.md` (U / AC ids) and `02-design.md`
 
 | Status | # | Task | Priority | Checks (from requirements §4) |
 |--------|---|------|----------|-------------------------------|
-| To do | 1 | Database and the Users table | High | AC-14 (part) |
-| To do | 2 | Seed the six demo users | High | AC-14 |
-| To do | 3 | The sign-in form and the session cookie | High | AC-01 (part), AC-02, AC-03, AC-04, AC-05, AC-07, AC-12 |
-| To do | 4 | Role home pages, top bar and the access gate | High | AC-01, AC-08, AC-09, AC-10, AC-15 |
-| To do | 5 | Log out | High | AC-11 |
-| To do | 6 | Throttle failed attempts | High | AC-06 |
-| To do | 7 | HR resets a password | Medium | AC-13 |
-| To do | 8 | Full acceptance walkthrough | High | AC-01 … AC-15 |
+| Done | 1 | Database and the Users table | High | AC-14 (part) |
+| Done | 2 | Seed the six demo users | High | AC-14 |
+| Done | 3 | The sign-in form and the session cookie | High | AC-01 (part), AC-02, AC-03, AC-04, AC-05, AC-07, AC-12 |
+| Done | 4 | Role home pages, top bar and the access gate | High | AC-01, AC-08, AC-09, AC-10, AC-15 |
+| Done | 5 | Log out | High | AC-11 |
+| Done | 6 | Throttle failed attempts | High | AC-06 |
+| Done | 7 | HR resets a password | Medium | AC-13 |
+| Done | 8 | Full acceptance walkthrough | High | AC-01 … AC-15 |
 
 ---
 
@@ -44,7 +44,7 @@ Every task traces back to `01-requirements.md` (U / AC ids) and `02-design.md`
 - **Check:**
   • Run `npx prisma db seed`, then open `npx prisma studio` → Users
   • Six rows: `employee1@`, `supervisor1@`, `supervisor2@`, `hr-1@`, `hr-2@`, `admin@budiman.com` — names, IC numbers, roles, divisions and designations match Reference B
-  • Every password column shows a hash starting with `$2a$`; searching the table for `password123` finds nothing (this is AC-14)
+  • Every password column shows a hash starting with `$2b$`; searching the table for `password123` finds nothing (this is AC-14)
 
 ## Task 3 – The sign-in form and the session cookie *(High)*
 
@@ -96,8 +96,8 @@ Every task traces back to `01-requirements.md` (U / AC ids) and `02-design.md`
 
 ## Task 7 – HR resets a password *(Medium)*
 
-> **Do not build until the HR Manager approves the spec amendment** (the note above
-> U9 in `01-requirements.md`): this exceeds the document's role table.
+> **Spec amendment approved 20/11/2026** (the note above U9 in
+> `01-requirements.md`): this exceeds the document's role table, cleared to build.
 
 - **Goal:** `/hr/password-reset` lists every user; **Reset password** on a row confirms "Reset {name}'s password to password123?", resets it (hashed), and shows a success message — HR only, enforced on the server.
 - **Files:** `src/app/hr/password-reset/page.tsx`, `src/app/hr/password-reset/actions.ts`, `src/lib/users.ts` (list + update), a link from the `/hr` home.
